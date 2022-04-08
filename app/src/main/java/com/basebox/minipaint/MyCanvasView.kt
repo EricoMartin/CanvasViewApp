@@ -17,6 +17,7 @@ class MyCanvasView(context: Context): View(context) {
     private var currentY = 0f
 
     private lateinit var frame: Rect
+    private lateinit var frameSecond: Rect
 
     private lateinit var extraCanvas: Canvas
     private lateinit var extraBitmap: Bitmap
@@ -25,7 +26,7 @@ class MyCanvasView(context: Context): View(context) {
     private var motionTouchEventY = 0f
 
     private val touchTolerance = ViewConfiguration.get(context).scaledTouchSlop
-    private val drawColor = ResourcesCompat.getColor(resources, R.color.colorPaint, null)
+    private val drawColor = ResourcesCompat.getColor(resources, R.color.black, null)
 
     private val paint = Paint().apply {
         color = drawColor
@@ -40,22 +41,27 @@ class MyCanvasView(context: Context): View(context) {
     }
 
     private val backgroundColor = ResourcesCompat.getColor(resources,
-        R.color.colorBackground, null)
+        R.color.white, null)
 
     override fun onSizeChanged(width: Int, height: Int, oldWidth: Int, oldHeight: Int) {
         super.onSizeChanged(width, height, oldWidth, oldHeight)
+        if (::extraBitmap.isInitialized) extraBitmap.recycle()
         extraBitmap = Bitmap.createBitmap(width, height,Bitmap.Config.ARGB_8888)
         extraCanvas =  Canvas(extraBitmap)
         extraCanvas.drawColor(backgroundColor)
-//        if (::extraBitmap.isInitialized) extraBitmap.recycle()
-        val inset = 40
+//
+        val inset = 50
         frame = Rect(inset, inset, width - inset, height - inset)
+
+        val insetSecond = 100
+        frameSecond = Rect(insetSecond, insetSecond, width - insetSecond, height - insetSecond)
     }
 
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
         canvas.drawBitmap(extraBitmap, 0f, 0f, null)
         canvas.drawRect(frame, paint)
+        canvas.drawRect(frameSecond, paint)
     }
 
     override fun onTouchEvent(event: MotionEvent?): Boolean {
